@@ -1,4 +1,4 @@
-#!/usr/bin/python2.2
+#!/usr/bin/python
 """HTML Diff: http://www.aaronsw.com/2002/diff
 Rough code, badly documented. Send me comments and patches."""
 
@@ -15,7 +15,10 @@ def textDiff(a, b):
 
 	out = []
 	a, b = html2list(a), html2list(b)
-	s = difflib.SequenceMatcher(None, a, b)
+	try: # autojunk can cause malformed HTML, but also speeds up processing.
+		s = difflib.SequenceMatcher(None, a, b, autojunk=False)
+	except TypeError:
+		s = difflib.SequenceMatcher(None, a, b)
 	for e in s.get_opcodes():
 		if e[0] == "replace":
 			# @@ need to do something more complicated here
